@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"crypto/tls"
 	"flag"
 	"fmt"
 	"net"
@@ -130,74 +129,38 @@ func main() {
 // process input item
 // if orrors occur during parsing, they are pushed straight to result channel
 func processInputItem(input string, chanInput chan string, chanResult chan *procResult) {
+	_ = "STUB: not implemented"
 	// initial inputs are skipped
-	input = strings.TrimSpace(input)
-	if input == "" {
-		return
-	}
-
-	// split input to host and port (if specified)
-	host, port := splitHostPort(input)
-
-	// get ports list to use
-	var ports []string
-	if port == "" {
-		// use ports from default list if not specified explicitly
-		ports = defaultPorts
-	} else {
-		ports = []string{port}
-	}
-
-	// CIDR?
-	if isCIDR(host) {
-		// expand CIDR
-		ips, err := expandCIDR(host)
-		if err != nil {
-			chanResult <- &procResult{addr: input, err: err}
-			return
-		}
-
-		// feed IPs from CIDR to input channel
-		for ip := range ips {
-			for _, port := range ports {
-				chanInput <- net.JoinHostPort(ip, port)
-			}
-		}
-	} else {
-		// feed atomic host to input channel
-		for _, port := range ports {
-			chanInput <- net.JoinHostPort(host, port)
-		}
-	}
+	return
 }
 
-/* connects to addr and grabs certificate information.
-returns slice of domain names from grabbed certificate */
+// split input to host and port (if specified)
+
+// get ports list to use
+
+// use ports from default list if not specified explicitly
+
+// CIDR?
+
+// expand CIDR
+
+// feed IPs from CIDR to input channel
+
+// feed atomic host to input channel
+
+/*
+	connects to addr and grabs certificate information.
+
+returns slice of domain names from grabbed certificate
+*/
 func grabCert(addr string, dialer *net.Dialer, onlyValidDomainNames bool) ([]string, error) {
+	_ = "STUB: not implemented"
 	// dial
-	conn, err := tls.DialWithDialer(dialer, "tcp", addr, &tls.Config{InsecureSkipVerify: true})
-	if err != nil {
-		return nil, err
-	}
-	defer conn.Close()
-
-	// get first certificate in chain
-	cert := conn.ConnectionState().PeerCertificates[0]
-
-	// get CommonName and all SANs into a slice
-	names := make([]string, 0, len(cert.DNSNames)+1)
-	if onlyValidDomainNames && isDomainName(cert.Subject.CommonName) || !onlyValidDomainNames {
-		names = append(names, cert.Subject.CommonName)
-	}
-
-	// append all SANs, excluding one that is equal to CN (if any)
-	for _, name := range cert.DNSNames {
-		if name != cert.Subject.CommonName {
-			if onlyValidDomainNames && isDomainName(name) || !onlyValidDomainNames {
-				names = append(names, name)
-			}
-		}
-	}
-
-	return names, nil
+	return nil, nil
 }
+
+// get first certificate in chain
+
+// get CommonName and all SANs into a slice
+
+// append all SANs, excluding one that is equal to CN (if any)
